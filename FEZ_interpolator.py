@@ -28,7 +28,11 @@ def findNeighbours(inVar, inVal):
 
 #start main loop
 clearScreen()
-print('\n\n' + '  ###  The John Cock Interpolator  ###' + '\n')
+print('\n\n' + '  _ ___  ___   ____    ' + '\n' +
+               ' | .__/ / _ \ /_  /    ' + '\n' +
+               ' | |___   __/  / /__     ' + '\n' +
+               ' | .__/ \___/ /_____/    ' + '\n' +
+               ' |_|             ' + '\n\n')
 
 #figuring out what table to download. SI or english.
 unitsLoop = True
