@@ -25,6 +25,7 @@ def findNeighbours(inVar, inVal):
 		#upperVal_loc = airProperties[airProperties[inVar] == upperVal].index.values
 		return lowerVal, upperVal
 
+unitsStringArray = ['','SI','English']
 
 #start main loop
 clearScreen()
@@ -65,7 +66,8 @@ while True:
 	#asking user to input the value from which we will interpolate
 	request = input('Enter the variable followed by its value (space delimited)\n' + 
 					'Accepted variables: [' +
-					', '.join(airProperties.columns.values) + ']\n\n')
+					', '.join(airProperties.columns.values) + ']\n\n' + 
+					'Remember you are using [' + unitsStringArray[units] + '] units: ')
 
 	#splitting the entry up into variable and value
 	requests = request.split()
@@ -74,28 +76,33 @@ while True:
 	#testing whether they entered a valid variable
 	try:
 		airProperties[inVar]
-	except IndexError:
+	except:
 		clearScreen()
 		print('\nYou failed to enter an accepted variable. You fool. Try Again.\n')
 		continue
 
-	print(inVar, inVal)
+	if inVal in airProperties[inVar].values:
+		i = airProperties[inVar].isin([inVal])
+		print('\n')
+		for var in airProperties.columns.values:
+			print(str(var) + ' ' + str(airProperties[var][i].values))
+		print('\n')
+	else:
+		values = []
+		x1_loc, x2_loc = findNeighbours(inVar, inVal)
+		x1 = airProperties[inVar][x1_loc]
+		x2 = airProperties[inVar][x2_loc]
+		for outVar in airProperties.columns.values:
+			y1 = airProperties.iloc[x1_loc][outVar]
+			y2 = airProperties.iloc[x2_loc][outVar]
+			outVal = interpolate(x1,x2,y1,y2,inVal)
+			tempList = [[outVar, outVal]]
+			values = values + tempList
 
-	values = []
-	x1_loc, x2_loc = findNeighbours(inVar, inVal)
-	x1 = airProperties[inVar][x1_loc]
-	x2 = airProperties[inVar][x2_loc]
-	for outVar in airProperties.columns.values:
-		y1 = airProperties.iloc[x1_loc][outVar]
-		y2 = airProperties.iloc[x2_loc][outVar]
-		outVal = interpolate(x1,x2,y1,y2,inVal)
-		tempList = [[outVar, outVal]]
-		values = values + tempList
-
-	print('\n')
-	for i in range(len(values)):
-		print(str(values[i][0]) + ' ' + str(values[i][1]))
-	print('\n')
+		print('\n')
+		for i in range(len(values)):
+			print(str(values[i][0]) + ' [' + str(round(values[i][1], 4)) + ']')
+		print('\n')
 
 	closingRemarks = input('Press \"Enter\" to find another value.\n' +
 						   'Press \"Ctrl-C\" to quit... ')
