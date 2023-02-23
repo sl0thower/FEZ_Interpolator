@@ -21,4 +21,3 @@ Run the code by typing `python FEZ_Interpolator.py`
 If you don't have python downloaded with the correct env var setup  
 you should look up how to do that and then try again.
 
-hello
